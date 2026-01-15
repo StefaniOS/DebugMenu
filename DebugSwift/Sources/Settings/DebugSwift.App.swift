@@ -53,3 +53,16 @@ extension DebugSwift {
         }
     }
 }
+
+extension DebugSwift {
+    @MainActor
+    @discardableResult
+    public static func toggleDebugger() {
+        if FloatViewManager.isShowingDebuggerView {
+            DebugSwift.App.removeDebugger()
+        } else {
+            DebugSwift.App.presentDebugger()
+        }
+        FloatViewManager.shared.ballView.isHidden = true
+    }
+}
