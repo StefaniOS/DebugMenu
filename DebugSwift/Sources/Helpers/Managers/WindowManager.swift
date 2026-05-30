@@ -53,6 +53,7 @@ enum WindowManager {
     static func removeDebugger() {
         FloatViewManager.isShowingDebuggerView = false
         removeNavigationBar()
+        rootNavigation?.topViewController?.view.layer.mask = nil
         rootNavigation?.popViewController(animated: true)
     }
 
@@ -124,6 +125,18 @@ enum WindowManager {
 }
 
 final class CustomWindow: UIWindow {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        for subview in subviews {
+            if let ballView = subview as? FloatBallView {
+                ballView.layer.position = FloatBallPositionHelper.restoreSavedPosition(in: self)
+            } else if let bottomView = subview as? BottomFloatView {
+                bottomView.frame = FloatBallPositionHelper.hiddenBottomFrame(in: self)
+            }
+        }
+    }
+
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         if WindowManager.isSelectingWindow { return true }
 
